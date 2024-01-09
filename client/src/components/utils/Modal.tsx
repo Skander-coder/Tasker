@@ -30,10 +30,10 @@ function Modal({ setOpenModal, type, onAddTask, onEditTask, task }) {
         clearErrors, } = useForm({
             resolver: yupResolver(validationSchema), defaultValues: initialValues
         });
-    const handleAdd = (task) => {
+    const handleAdd = (task: Task) => {
         onAddTask(task);
     };
-    const handleEdit = (task) => {
+    const handleEdit = (task: Task) => {
         onEditTask(task);
     }
     const submit = handleSubmit(async (task: Task) => {
