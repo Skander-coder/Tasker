@@ -1,22 +1,28 @@
 const Task = require("../models/Task.model");
-
+const logger = require("../utils/logger")
 const createTask = async (req, res, next) => {
     try {
-        const countExistTasks = await Task.countDocuments();
-        const task = new Task(req.body);
-        task.order = countExistTasks + 1;
+        const highestOrderTask = await Task.findOne().sort({ order: -1 });
+
+        const newOrder = highestOrderTask ? highestOrderTask.order + 1 : 1;
+
+        const task = new Task({ ...req.body, order: newOrder });
+
         await task.save();
+
         res.status(201).json(task);
     } catch (error) {
-        res.status(500).json({ error: error.message })
+        logger.error(`Error occurred: ${error.message}`);
+        res.status(500).json({ error: error.message });
     }
-
-}
+};
 const getAllTasks = async (req, res, next) => {
     try {
         const tasks = await Task.find().sort('order');
+
         res.status(200).json(tasks);
     } catch (error) {
+        logger.error(`Error occurred: ${error.message}`);
         res.status(500).json({ error: error.message })
     }
 
@@ -24,8 +30,10 @@ const getAllTasks = async (req, res, next) => {
 const getTaskById = async (req, res, next) => {
     try {
         const task = await Task.findById(req.params.id);
+
         res.status(200).json(task);
     } catch (error) {
+        logger.error(`Error occurred: ${error.message}`);
         res.status(500).json({ error: error.message })
     }
 
@@ -33,8 +41,10 @@ const getTaskById = async (req, res, next) => {
 const updateTaskById = async (req, res, next) => {
     try {
         const task = await Task.findByIdAndUpdate(req.params.id, req.body, { new: true })
+
         res.status(200).json(task)
     } catch (error) {
+        logger.error(`Error occurred: ${error.message}`);
         res.status(500).json({ error: error.message })
     }
 
@@ -42,8 +52,11 @@ const updateTaskById = async (req, res, next) => {
 const deleteTaskById = async (req, res, next) => {
     try {
         await Task.findByIdAndDelete(req.params.id);
+
+
         res.status(204).end();
     } catch (error) {
+        logger.error(`Error occurred: ${error.message}`);
         res.status(500).json({ error: error.message })
     }
 
@@ -51,8 +64,11 @@ const deleteTaskById = async (req, res, next) => {
 const getTasksByStatus = async (req, res, next) => {
     try {
         const tasks = await Task.find({ status: req.params.status });
+
+
         res.status(200).json(tasks);
     } catch (error) {
+        logger.error(`Error occurred: ${error.message}`);
         res.status(500).json({ error: error.message })
 
     }
@@ -60,7 +76,6 @@ const getTasksByStatus = async (req, res, next) => {
 
 const getTasksByDeadline = async (req, res, next) => {
     try {
-        console.log(req.params);
         const dateFilter = req.params.date.split('T')[0];
         const tasks = await Task.find({
             deadline: {
@@ -84,6 +99,8 @@ const searchTasks = async (req, res, next) => {
                 { description: { $regex: keyword, $options: 'i' } },
             ],
         });
+
+
         res.status(200).json(tasks);
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -111,6 +128,7 @@ const updateOrder = async (req, res) => {
         await Promise.all([draggedTask.save(), draggedOverTask.save()]);
 
 
+
         res.status(200).json({ message: 'Task order updated successfully' });
     } catch (error) {
         console.error('Error updating task order:', error);
@@ -120,7 +138,6 @@ const updateOrder = async (req, res) => {
 const updateStatus = async (req, res) => {
     try {
         const { taskId, newStatus } = req.body;
-        console.log(taskId);
         const task = await Task.findById(taskId);
         if (!task) {
             return res.status(404).json({ message: 'Task not found' });
