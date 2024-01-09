@@ -9,7 +9,8 @@ const TasksList = ({ tasks, onDeleteTask, onEditTask, handleSort, onUpdateStatus
     const draggedOverTask = useRef<number>(0);
 
     return (
-        <div className="flex flex-wrap py-2 ">
+        <div className="flex flex-wrap py-4 ">
+            {!tasks.length && <div className="w-full flex justify-center items-center"> <h1 className="text-4xl mt-8">No Tasks Found...</h1></div>}
             {tasks.map((task: Task, index) => (
                 <div
                     key={index}
@@ -20,7 +21,7 @@ const TasksList = ({ tasks, onDeleteTask, onEditTask, handleSort, onUpdateStatus
                     onDragOver={(e) => e.preventDefault()}
                     className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 xl:w-1/5 px-2 mb-4"
                 >
-                    <TaskCard key={task._id} task={task} onDeleteTask={onDeleteTask} onEditTask={onEditTask} onUpdateStatus={onUpdateStatus} />
+                    <TaskCard task={task} onDeleteTask={onDeleteTask} onEditTask={onEditTask} onUpdateStatus={onUpdateStatus} />
                 </div>
 
             ))}

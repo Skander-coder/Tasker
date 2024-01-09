@@ -21,21 +21,21 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onDeleteTask, onEditTask, onU
                     <LogoTask letter={task.title[0]} />
                     <h2 className="text-2xl font-bold mx-2">{task.title}</h2>
                 </div>
-                <div onClick={handleDelete}><span>X</span></div>
+                <div onClick={handleDelete} className="cursor-pointer"><i className="fa-solid fa-xmark text-red-500 text-xl"></i></div>
             </div>
-            <div>
+            <div className="text-md font-medium text-gray-500">
                 {task.description}
             </div>
             <div>
                 <div className="flex justify-between">
                     <StatusSelector status={task.status} onUpdateStatus={onUpdateStatus} task_id={task._id} />
                     <button
-                        className="btn-primary"
+
                         onClick={() => {
                             setModalOpen(true);
                         }}
                     >
-                        Edit Task
+                        <i className="fa-solid fa-pen-to-square text-3xl"></i>
                     </button>
                     {modalOpen && <Modal setOpenModal={setModalOpen} type="Edit" task={task} onEditTask={onEditTask} />}
                 </div>

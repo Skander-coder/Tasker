@@ -2,11 +2,33 @@ import { useEffect, useState } from "react";
 import TasksList from "../components/Tasks/TasksList"
 import Filters from "../components/utils/Filters"
 import Modal from "../components/utils/Modal";
-import { addTask, deleteTask, editTask, getAllTasks, updateOrder, updateStatus } from "../apis/tasks";
+import { addTask, deleteTask, editTask, getAllTasks, getTaskBySeachQuery, updateOrder, updateStatus, getTaskByDeadline } from "../apis/tasks";
 import { Task, TaskStatus } from "../interfaces/Task";
 const HomePage = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [tasks, setTasks] = useState<Task[]>([]);
+    const handleSearch = async (query: string) => {
+
+
+        if (query) {
+
+            const result = await getTaskBySeachQuery(query);
+            setTasks(result.data);
+
+        } else {
+            getTasks();
+        }
+    };
+    const handleDateFilter = async (date) => {
+
+
+        if (date) {
+            const result = await getTaskByDeadline(date);
+            setTasks(result.data);
+        } else {
+            getTasks();
+        }
+    }
     const getTasks = async () => {
         const respo = await getAllTasks();
         setTasks(respo.data);
@@ -33,7 +55,8 @@ const HomePage = () => {
         await updateStatus(taskId, newStatus);
         getTasks();
 
-    }
+    };
+
     useEffect(() => {
         getTasks();
     }, []);
@@ -49,15 +72,15 @@ const HomePage = () => {
     return (
         <div className="py-2 px-7">
             <div className="flex justify-between items-center py-2">
-                <Filters />
+                <Filters onSearch={handleSearch} onDateFilter={handleDateFilter} />
                 <div>
                     <button
-                        className="btn-primary"
+                        className="btn-primary "
                         onClick={() => {
                             setModalOpen(true);
                         }}
                     >
-                        Add Task
+                        Add Task +
                     </button>
                 </div>
             </div>

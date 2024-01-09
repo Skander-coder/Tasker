@@ -18,7 +18,7 @@ function Modal({ setOpenModal, type, onAddTask, onEditTask, task }) {
     const initialValues: { title: string, description: string, deadline: Date, status: TaskStatus } = {
         title: isEdit ? task.title : "",
         description: isEdit ? task.description : "",
-        deadline: isEdit ? task.deadline : new Date(),
+        deadline: isEdit ? task.deadline.split('T')[0] : new Date().toISOString().split('T')[0],
         status: isEdit ? task.status : TaskStatus.TODO,
         _id: isEdit ? task._id : ""
     }
@@ -38,6 +38,9 @@ function Modal({ setOpenModal, type, onAddTask, onEditTask, task }) {
     }
     const submit = handleSubmit(async (task: Task) => {
         try {
+            task.deadline.setDate(task.deadline.getDate() + 1);
+            // task.deadline=formattedDate
+
             if (isEdit) {
                 handleEdit(task);
             } else {
@@ -60,7 +63,7 @@ function Modal({ setOpenModal, type, onAddTask, onEditTask, task }) {
                             setOpenModal(false);
                         }}
                     >
-                        X
+                        <i className="fa-solid fa-xmark text-red-500 text-xl"></i>
                     </button>
                 </div>
                 <div className="title">
@@ -80,7 +83,7 @@ function Modal({ setOpenModal, type, onAddTask, onEditTask, task }) {
                             </div>
                             <div>
                                 <label htmlFor="deadline" className="block mb-2 text-sm font-medium text-gray-900 ">Deadline</label>
-                                <input {...register('deadline')} value={task.deadline} type="date" id="deadline" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Task 1" required />
+                                <input {...register('deadline')} type="date" id="deadline" className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 " placeholder="Task 1" required />
 
                             </div>
                             <div>

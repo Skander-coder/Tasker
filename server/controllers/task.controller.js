@@ -60,7 +60,14 @@ const getTasksByStatus = async (req, res, next) => {
 
 const getTasksByDeadline = async (req, res, next) => {
     try {
-        const tasks = await Task.find({ deadline: req.params.date });
+        console.log(req.params);
+        const dateFilter = req.params.date.split('T')[0];
+        const tasks = await Task.find({
+            deadline: {
+                $gt: new Date(dateFilter),
+                $lte: new Date(new Date(dateFilter).setDate(new Date(dateFilter).getDate() + 1)),
+            },
+        });
         res.status(200).json(tasks);
     } catch (error) {
         res.status(500).json({ error: error.message })

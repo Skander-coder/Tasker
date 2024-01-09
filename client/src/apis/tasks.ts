@@ -9,6 +9,7 @@ export const getAllTasks = async () => {
 }
 
 export const addTask = async (task: Task) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { _id, ...taskWithoutID } = task;
 
     const response = await api.post(API_TASKS, taskWithoutID);
@@ -16,7 +17,6 @@ export const addTask = async (task: Task) => {
 }
 
 export const editTask = async (task: Task) => {
-    console.log(task);
 
     const response = await api.put(`${API_TASKS}/${task._id}`, task);
     return response;
@@ -33,6 +33,11 @@ export const getTaskById = async (id: string) => {
     return response;
 }
 
+export const getTaskBySeachQuery = async (query: string) => {
+    const response = await api.get(`${API_TASKS}/search/${query}`);
+    return response;
+}
+
 export const updateStatus = async (taskId: string, newStatus: TaskStatus) => {
     const response = await api.put(`${API_TASKS}/updateStatus`, { taskId, newStatus });
     return response
@@ -41,5 +46,11 @@ export const updateStatus = async (taskId: string, newStatus: TaskStatus) => {
 export const updateOrder = async (draggedTaskId: string, draggedOverTaskId: string) => {
 
     const response = await api.put(`${API_TASKS}/updateOrder`, { draggedTaskId, draggedOverTaskId });
+    return response;
+}
+
+export const getTaskByDeadline = async (date) => {
+
+    const response = await api.get(`${API_TASKS}/deadline/${date}`);
     return response;
 }
