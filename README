@@ -13,16 +13,6 @@ The Task Management Application is a web application designed to help users orga
   - Express.js (v4.16.1)
   - MongoDB (v7.0)
 
-## Folder Structure
-
-
-Certainly! Here's a template for your README file based on the information we discussed:
-
-markdown
-Copy code
-# Task Management Application
-
-The Task Management Application is a web application designed to help users organize and manage their tasks effectively. It provides a user-friendly interface for creating, updating, and deleting tasks, with additional features like task filtering and drag-and-drop reordering.
 
 ## Technologies Used
 
@@ -48,6 +38,14 @@ task-management-app/
 | |-- models/
 | |-- ...
 |-- ...
+
+## Launch App
+NodeJS:
+> cd server 
+> npm start
+ReactJS:
+> cd client
+> npm run dev
 
 ## Frontend Logic
 
