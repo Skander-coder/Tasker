@@ -26,7 +26,15 @@ const HomePage = () => {
     useEffect(() => {
         getTasks();
     }, []);
+    const handleSort = (dragTaskIndex: number, draggedOverTaskIndex: number) => {
+        console.log(draggedOverTaskIndex);
 
+        const taskClone = [...tasks];
+        const temp = taskClone[dragTaskIndex];
+        taskClone[dragTaskIndex] = taskClone[draggedOverTaskIndex];
+        taskClone[draggedOverTaskIndex] = temp;
+        setTasks(taskClone);
+    };
     return (
         <div className="py-2 px-7">
             <div className="flex justify-between items-center py-2">
@@ -42,7 +50,7 @@ const HomePage = () => {
                     </button>
                 </div>
             </div>
-            <TasksList tasks={tasks} onDeleteTask={onDeleteTask} onEditTask={onEditTask} />
+            <TasksList tasks={tasks} onDeleteTask={onDeleteTask} onEditTask={onEditTask} handleSort={handleSort} />
             {modalOpen && <Modal setOpenModal={setModalOpen} type="Add" onAddTask={onAddTask} />}
 
         </div>

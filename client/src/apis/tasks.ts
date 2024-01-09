@@ -9,7 +9,9 @@ export const getAllTasks = async () => {
 }
 
 export const addTask = async (task: Task) => {
-    const response = await api.post(API_TASKS, task);
+    const { _id, ...taskWithoutID } = task;
+
+    const response = await api.post(API_TASKS, taskWithoutID);
     return response;
 }
 
