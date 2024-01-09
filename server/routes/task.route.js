@@ -10,6 +10,8 @@ router.get('/status/:status', taskController.getTasksByStatus);
 router.get('/deadline/:date', taskController.getTasksByDeadline);
 router.get('/search/:keyword', taskController.searchTasks);
 
+router.put('/updateOrder', taskController.updateOrder);
+router.put('/updateStatus', taskController.updateStatus);
 router.put('/:id', taskController.updateTaskById);
 // router.put('updateTaskOrder/:id',)
 

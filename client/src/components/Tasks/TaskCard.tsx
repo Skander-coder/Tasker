@@ -6,10 +6,11 @@ import Modal from "../utils/Modal";
 interface TaskCardProps {
     task: Task;
 }
-const TaskCard: React.FC<TaskCardProps> = ({ task, onDeleteTask, onEditTask }) => {
+const TaskCard: React.FC<TaskCardProps> = ({ task, onDeleteTask, onEditTask, onUpdateStatus }) => {
     const [modalOpen, setModalOpen] = useState(false);
+
     const handleDelete = () => {
-        onDeleteTask(task._id); // Assuming "_id" is the property containing the task ID
+        onDeleteTask(task._id);
     };
 
     return (
@@ -27,7 +28,7 @@ const TaskCard: React.FC<TaskCardProps> = ({ task, onDeleteTask, onEditTask }) =
             </div>
             <div>
                 <div className="flex justify-between">
-                    <StatusSelector />
+                    <StatusSelector status={task.status} onUpdateStatus={onUpdateStatus} task_id={task._id} />
                     <button
                         className="btn-primary"
                         onClick={() => {

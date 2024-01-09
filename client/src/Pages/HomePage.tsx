@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import TasksList from "../components/Tasks/TasksList"
 import Filters from "../components/utils/Filters"
 import Modal from "../components/utils/Modal";
-import { addTask, deleteTask, editTask, getAllTasks } from "../apis/tasks";
-import { Task } from "../interfaces/Task";
+import { addTask, deleteTask, editTask, getAllTasks, updateOrder, updateStatus } from "../apis/tasks";
+import { Task, TaskStatus } from "../interfaces/Task";
 const HomePage = () => {
     const [modalOpen, setModalOpen] = useState(false);
     const [tasks, setTasks] = useState<Task[]>([]);
@@ -23,16 +23,27 @@ const HomePage = () => {
         await editTask(task);
         getTasks();
     }
+    const onUpdateOrder = async (draggedTaskId: string, draggedOverTaskId: string) => {
+        await updateOrder(draggedTaskId, draggedOverTaskId);
+
+    }
+    const onUpdateStatus = async (taskId: string, newStatus: TaskStatus) => {
+
+
+        await updateStatus(taskId, newStatus);
+        getTasks();
+
+    }
     useEffect(() => {
         getTasks();
     }, []);
     const handleSort = (dragTaskIndex: number, draggedOverTaskIndex: number) => {
-        console.log(draggedOverTaskIndex);
 
         const taskClone = [...tasks];
         const temp = taskClone[dragTaskIndex];
         taskClone[dragTaskIndex] = taskClone[draggedOverTaskIndex];
         taskClone[draggedOverTaskIndex] = temp;
+        onUpdateOrder(tasks[dragTaskIndex]._id!, tasks[draggedOverTaskIndex]._id!);
         setTasks(taskClone);
     };
     return (
@@ -50,7 +61,7 @@ const HomePage = () => {
                     </button>
                 </div>
             </div>
-            <TasksList tasks={tasks} onDeleteTask={onDeleteTask} onEditTask={onEditTask} handleSort={handleSort} />
+            <TasksList tasks={tasks} onDeleteTask={onDeleteTask} onEditTask={onEditTask} handleSort={handleSort} onUpdateOrder={onUpdateOrder} onUpdateStatus={onUpdateStatus} />
             {modalOpen && <Modal setOpenModal={setModalOpen} type="Add" onAddTask={onAddTask} />}
 
         </div>

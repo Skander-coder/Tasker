@@ -9,7 +9,8 @@ interface Task {
     title: string,
     description: string,
     deadline: Date,
-    status: TaskStatus
+    status: TaskStatus,
+    order: number
 }
 
 export { TaskStatus }

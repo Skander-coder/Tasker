@@ -2,7 +2,10 @@ const Task = require("../models/Task.model");
 
 const createTask = async (req, res, next) => {
     try {
-        const task = await Task.create(req.body);
+        const countExistTasks = await Task.countDocuments();
+        const task = new Task(req.body);
+        task.order = countExistTasks + 1;
+        await task.save();
         res.status(201).json(task);
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -11,7 +14,7 @@ const createTask = async (req, res, next) => {
 }
 const getAllTasks = async (req, res, next) => {
     try {
-        const tasks = await Task.find();
+        const tasks = await Task.find().sort('order');
         res.status(200).json(tasks);
     } catch (error) {
         res.status(500).json({ error: error.message })
@@ -81,6 +84,48 @@ const searchTasks = async (req, res, next) => {
     }
 }
 
+const updateOrder = async (req, res) => {
+    try {
+
+        const { draggedTaskId, draggedOverTaskId } = req.body;
+
+        const [draggedTask, draggedOverTask] = await Promise.all([
+            Task.findById(draggedTaskId),
+            Task.findById(draggedOverTaskId),
+        ]);
+        if (!draggedTask || !draggedOverTask) {
+            return res.status(404).json({ message: 'One or both tasks not found' });
+        }
+
+        const tempOrder = draggedTask.order;
+        draggedTask.order = draggedOverTask.order;
+        draggedOverTask.order = tempOrder;
+
+        await Promise.all([draggedTask.save(), draggedOverTask.save()]);
+
+
+        res.status(200).json({ message: 'Task order updated successfully' });
+    } catch (error) {
+        console.error('Error updating task order:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+const updateStatus = async (req, res) => {
+    try {
+        const { taskId, newStatus } = req.body;
+        console.log(taskId);
+        const task = await Task.findById(taskId);
+        if (!task) {
+            return res.status(404).json({ message: 'Task not found' });
+        }
+        task.status = newStatus;
+        await task.save();
+        res.status(200).json({ message: 'Status updated successfully', task });
+    } catch (error) {
+        console.error('Error updating status:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 module.exports = {
     createTask,
     getAllTasks,
@@ -89,5 +134,7 @@ module.exports = {
     deleteTaskById,
     searchTasks,
     getTasksByDeadline,
-    getTasksByStatus
+    getTasksByStatus,
+    updateOrder,
+    updateStatus
 }

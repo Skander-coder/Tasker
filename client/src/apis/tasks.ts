@@ -1,4 +1,4 @@
-import { Task } from "../interfaces/Task";
+import { Task, TaskStatus } from "../interfaces/Task";
 import { api } from "./axios";
 
 const API_TASKS = "/tasks";
@@ -30,5 +30,16 @@ export const deleteTask = async (id: string) => {
 
 export const getTaskById = async (id: string) => {
     const response = await api.get(`${API_TASKS}/${id}`);
+    return response;
+}
+
+export const updateStatus = async (taskId: string, newStatus: TaskStatus) => {
+    const response = await api.put(`${API_TASKS}/updateStatus`, { taskId, newStatus });
+    return response
+}
+
+export const updateOrder = async (draggedTaskId: string, draggedOverTaskId: string) => {
+
+    const response = await api.put(`${API_TASKS}/updateOrder`, { draggedTaskId, draggedOverTaskId });
     return response;
 }
